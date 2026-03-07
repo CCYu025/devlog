@@ -167,10 +167,14 @@ git push -u origin main
 
 ### 日常推送流程
 
+Remote：`https://github.com/CCYu025/devlog.git`
+
+當使用者說「推送 github」時，依序執行：
+
 ```bash
-git add <files>
-git commit -m "message"
-git pull --rebase origin main   # GitHub Actions 可能已自動 commit file-index.json
+git add -A
+git commit -m "<自動根據變更內容產生的 commit message>"
+git pull --rebase origin main
 git push
 ```
 
