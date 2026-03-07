@@ -1,0 +1,76 @@
+# 開發日誌：用終端機說話
+
+## 緣起
+
+[09:15] 想替自己的開發過程留下紀錄，但市面上的工具不是太重就是太花哨。
+
+一個念頭冒出來：工具本身不應該有負擔。純靜態、無框架、直接 GitHub Pages 部署——就這樣。
+名字就叫「開發日誌」，檔案是 .txt，格式自己定。
+
+## 設計哲學
+
+[10:00] 決定視覺風格的那一刻，腦海裡只有一個畫面：深夜機房裡發著幽綠光芒的 VT100 終端機。
+
+不是懷舊，是一種誠實。這個工具就是給開發者用的，它應該看起來就像開發者的日常——
+黑底、等寬字體、游標一閃一閃。#00ff41，磷光綠，這個顏色本身就是一種宣告。
+
+- 顏色集中在 CSS :root 變數，一個地方改全站換色
+- JetBrains Mono，開發者的字體，沒有理由用別的
+- 字級 13px，終端機密度，不是閱讀雜誌
+
+[11:30] 視覺效果一層一層疊上去，每一層都有對應的物理意義。
+
+- Scanlines：CRT 掃描線，repeating-linear-gradient，提醒你螢幕是有結構的
+- Vignette：邊緣暗角，radial-gradient，把視線拉向中心
+- Beam Sweep：電子束掃過螢幕，140px 半透明橫帶，6 秒一次
+- H-Sync Jitter：水平同步偶爾失鎖，±1px translateX，在 crt-noise 動畫 94% 處觸發
+- Phosphor Glow：text-shadow，讓文字真的像在發光
+
+這些不是裝飾，是在說一個故事：這台終端機是真實存在過的。
+
+## 技術決策
+
+[13:00] 架構幾乎在第一天就定型了，之後沒有大幅更動過。
+
+靜態檔案：index.html + app.js + style.css + logs/*.txt + file-index.json。
+沒有 npm，沒有 webpack，沒有任何 node_modules 目錄。
+部署就是推一個 commit，GitHub Actions 自動重建 file-index.json。
+
+- fetch('./file-index.json') 取得日誌清單
+- fetch('./logs/YYYYMMDD.txt') 讀取內容
+- parseLines() 解析格式，typewriteNodes() 逐字輸出 DOM
+- escapeHTML() 確保所有外部文字過 XSS 過濾再渲染
+
+[14:20] 打字機效果是後來加的，但加完之後覺得一直都應該有。
+
+每個字元 20ms 輸出，h1 後停頓 2 秒，像在等你把標題讀完。
+點擊內容區切換 Turbo 模式，2ms/字元——速度感完全不同，但動畫還在。
+切換日誌時，generation token 機制確保舊動畫立即終止，不留殘影。
+
+[15:45] 換台效果（static noise）是整個專案裡最讓我滿意的一段 code。
+
+切換日誌的瞬間，canvas 覆蓋內容區，RAF 逐幀繪製隨機磷光綠像素。
+58% 密度，G 通道 25-255，微量藍色偏移，半透明疊加——
+不是純粹的技術展示，是在模擬一個實際的物理現象：映像管電視換台的無訊號畫面。
+fetch 與雜訊並行執行，靜態結束後才啟動打字機，整個過程約 1.2 秒。
+
+## 今日：RWD 適配
+
+[16:30] 今天完成了響應式支援，讓這個工具在手機上也能正常使用。
+
+原本的設計完全沒有考慮小螢幕，sidebar 固定 260px，在 375px 寬的手機上只剩 111px 的內容區。
+
+- 平板（601-900px）：sidebar 縮至 200px，resize handle 支援觸控拖曳
+- 手機（600px 以下）：sidebar 收進 overlay，[MENU] 出現在 breadcrumb 左側
+- backdrop 點擊收起，選擇日誌後自動收起，桌面版完全無副作用
+
+[17:00] iframe 嵌入支援是這次改動的附帶效果。
+
+只要 iframe 寬度在 600px 以下，手機 layout 自動接管。
+不需要額外的 API，不需要 postMessage，breakpoint 就是介面。
+
+[17:30] 這個工具現在在所有裝置上都能用了。
+
+從一個只在桌機上能看的靜態頁面，到可以在手機上查閱日誌、在 iframe 裡嵌入展示——
+整個過程沒有引入任何依賴，沒有 framework，沒有 bundler。
+就是 HTML、CSS、JavaScript，和一點對終端機美學的執念。

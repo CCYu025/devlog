@@ -1,0 +1,32 @@
+# 2026-03-05 工作日誌
+
+## 上午
+
+[09:00] 開始今天的工作，初始化 WorkLog 專案。
+
+- 規劃前端系統架構
+- 設計 terminal 風格 UI
+- 確定檔案格式與 GitHub Actions 流程
+
+[10:30] 完成核心架構設計。
+
+一般筆記：今天主要專注在系統設計階段，確保靜態部署方案可行。
+
+## 下午
+
+[14:00] 開始實作前端介面。
+
+- 建立 index.html 骨架
+- 撰寫 style.css terminal 主題
+- 實作 app.js 邏輯
+
+[16:00] 完成 GitHub Actions workflow 設定。
+
+- generate-index.yml 自動產生 file-index.json
+- 測試本地端預覽效果
+
+[17:30] 今日工作完成。
+
+- 推送至 GitHub
+- 設定 GitHub Pages
+- 系統上線

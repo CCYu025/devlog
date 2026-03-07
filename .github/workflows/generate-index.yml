@@ -1,0 +1,28 @@
+name: Generate File Index
+
+on:
+  push:
+    branches: [main]
+    paths: ['logs/**']
+
+permissions:
+  contents: write
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate file-index.json
+        run: |
+          files=$(ls logs/*.txt 2>/dev/null | xargs -I{} basename {} | sort -r | jq -R . | jq -s .)
+          echo "{\"files\": $files, \"generated\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > file-index.json
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add file-index.json
+          git diff --cached --quiet || git commit -m "chore: update file-index [skip ci]"
+          git push
