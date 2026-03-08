@@ -111,10 +111,12 @@ npx serve .
 ### z-index 層級
 
 ```
-#content::after  (scanlines)    z: 100
-canvas #static-overlay          z: 95
-#content::before (crt-beam)     z: 90
-#log-body::before (vignette)    z: 50
+#content::after  (scanlines)         z: 100
+canvas #static-overlay               z: 95
+#content::before (crt-beam)          z: 90
+#log-body (isolation: isolate 整體)  z: auto
+  └ text content                      z: auto  ← 在 vignette 之上
+  └ #log-body::before (vignette)      z: -1
 ```
 
 ### 打字機速度常數（`app.js` 頂部）
