@@ -170,6 +170,7 @@ async function loadFile(filename, addToHistory) {
   const generation = _twGeneration;
   const isStale = () => _twGeneration !== generation;
 
+  document.getElementById('log-body').innerHTML = '';
   const contentEl = document.getElementById('content');
   const staticPromise = showStaticNoise(contentEl, isStale);
 

@@ -33,7 +33,7 @@ html, body {
   display: grid;
   grid-template-columns: var(--sidebar-width) 4px 1fr;
   grid-template-rows: 1fr;
-  height: calc(100vh - var(--status-height));
+  height: calc(100dvh - var(--status-height));
   border-radius: 4px;
   overflow: hidden;
 }
@@ -222,11 +222,12 @@ html, body {
   line-height: 1.75;
   position: relative;
   letter-spacing: 0.03em;
+  isolation: isolate;
 }
 
 #log-body::before {
   content: '';
-  position: fixed;
+  position: absolute;
   inset: 0;
   pointer-events: none;
   background: radial-gradient(
@@ -234,7 +235,7 @@ html, body {
     transparent 55%,
     rgba(0, 0, 0, 0.55) 100%
   );
-  z-index: 50;
+  z-index: -1;
 }
 
 /* ── Phosphor glow ─────────────────────────────────────── */
@@ -427,6 +428,7 @@ html, body {
   #sidebar.open {
     transform: translateX(0);
   }
+  #content       { grid-column: 3; }
   #resize-handle { display: none; }
   #menu-toggle   { display: inline; }
   #log-body      { padding: 20px 20px 36px; }

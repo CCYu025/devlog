@@ -9,7 +9,7 @@ A static, zero-dependency **開發日誌（devlog）** viewer with a CRT phospho
 ### Visual Theme
 - **CRT 綠磷光管風格**：`#00ff41` 主色，黑底，模擬 VT100 終端機
 - **Scanlines**：`#content::after` 用 repeating-linear-gradient 疊加
-- **Vignette**：`#log-body::before` 用 radial-gradient 製造邊緣暗角
+- **Vignette**：`#log-body::before` 用 radial-gradient 製造邊緣暗角；`position: absolute`（相對 `#log-body`），`z-index: -1`（在文字之下）；`#log-body` 設 `isolation: isolate` 建立 stacking context 確保 z-index 隔離正確
 - **Flicker + H-Sync Jitter**：`#content` 套用 `crt-noise` 動畫（8s 循環）；在 ~94% 處加入 ±1px `translateX` 模擬水平同步失鎖
 - **Beam Sweep**：`#content::before` 每 6s 掃一次；140px 半透明磷光橫帶從頂到底線性移動（`z-index: 90`，在 scanlines 之下）；`::after` 已給 scanlines 佔用
 - **Static Noise（換台效果）**：切換日誌時，`<canvas id="static-overlay">` 以 `z-index: 95` 覆蓋 `#content`，繪製隨機磷光綠像素；淡入 100ms → 持續 900ms → 淡出 200ms（共 ~1200ms）；scanlines（z: 100）仍疊於其上
@@ -78,7 +78,8 @@ Files live in `logs/` and are named `YYYYMMDD.txt`. The parser in `app.js:parseL
 
 ### Mobile Overlay Sidebar（≤600px）
 
-- `#app` grid 縮為 `0 0 1fr`，sidebar 從 layout 移除
+- `#app` grid 縮為 `0 0 1fr`，sidebar 從 layout 移除；**必須**同時設 `#content { grid-column: 3 }`，否則 `#sidebar`（absolute）和 `#resize-handle`（none）都離開 grid flow，`#content` 會自動排入第 1 欄（寬度 0）導致不可見
+- `#app` height 使用 `100dvh`（非 `100vh`），避免 iOS Safari URL bar 造成高度誤差
 - `#sidebar` 改為 `position: absolute`，預設 `translateX(-100%)` 隱藏於左側
 - `#menu-toggle` 按鈕顯示於 `#breadcrumb` 最左側，點擊切換 sidebar `.open` class
 - `#sidebar-backdrop`（`z-index: 199`）點擊後關閉 sidebar
@@ -122,7 +123,7 @@ Files live in `logs/` and are named `YYYYMMDD.txt`. The parser in `app.js:parseL
 切換日誌時疊加磷光綠雜訊動畫，模擬映像管電視換台的無訊號畫面。
 
 ### 行為
-- 切換日誌 → Canvas overlay 淡入（100ms）蓋在 `#content` 上
+- 切換日誌 → **先清空 `#log-body`**（`innerHTML = ''`），再啟動 Canvas overlay 淡入（100ms）蓋在 `#content` 上
 - RAF 逐幀繪製隨機磷光綠像素（58% 密度，G 通道 25–255，微量 B，半透明）
 - 持續 900ms → 淡出（200ms）→ canvas 從 DOM 移除
 - `fetch` 與雜訊**並行**執行；靜態結束後才啟動打字機
@@ -137,15 +138,17 @@ Files live in `logs/` and are named `YYYYMMDD.txt`. The parser in `app.js:parseL
 
 ### z-index 層級
 ```
-#content::after (scanlines)   z: 100
-canvas #static-overlay         z: 95
-#content::before (crt-beam)   z: 90
-#log-body::before (vignette)  z: 50
+#content::after (scanlines)          z: 100  (in #content stacking ctx)
+canvas #static-overlay                z: 95   (in #content stacking ctx)
+#content::before (crt-beam)          z: 90   (in #content stacking ctx)
+#log-body (isolation:isolate 整體)   z: auto (in #content stacking ctx)
+  └ text content                      z: auto (above ::before in paint order)
+  └ #log-body::before (vignette)      z: -1   (in #log-body stacking ctx)
 ```
 
 ### 關鍵函式（`app.js`）
 - `showStaticNoise(contentEl, isStale)` — 建立 canvas、RAF 繪製、fade in/out、stale 時立即清理
-- `loadFile()` — 呼叫 `showStaticNoise` 與 `fetch` 並行；`await staticPromise` 後再啟動打字機
+- `loadFile()` — 先清空 `#log-body`，再呼叫 `showStaticNoise` 與 `fetch` 並行；`await staticPromise` 後再啟動打字機
 
 ## 部署至 GitHub Pages
 
@@ -179,3 +182,7 @@ git push
 ```
 
 > **注意**：每次 push `logs/` 異動時，`generate-index.yml` 會自動 commit 一次 `file-index.json`（`[skip ci]`）。若下次 push 前未先 pull，會因 remote 超前而被拒絕。標準處理：`git pull --rebase origin main` 再 push。
+
+@.claude/tech-stack.md
+@.claude/workflow.md
+@.claude/ai-guidelines.md
