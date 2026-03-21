@@ -59,6 +59,21 @@ Files live in `logs/` and are named `YYYYMMDD.txt`. The parser in `app.js:parseL
 1. Create `logs/YYYYMMDD.txt` following the format above.
 2. Update `file-index.json` manually for local preview, or push to `main` and let the GitHub Action regenerate it.
 
+## Log Templates
+
+`templates/` 提供六種寫作風格的起始樣板，複製後改名為 `YYYYMMDD.txt` 即可使用：
+
+| 檔名 | 風格 | 適用場景 |
+|---|---|---|
+| `A_worklog.txt` | 時間軸流水帳 | 按部就班的工作日 |
+| `B_technote.txt` | 技術筆記 | 深入解決一個問題 |
+| `C_sprint.txt` | 衝刺速記 | 靈感爆發、快速推進 |
+| `D_reflection.txt` | 反思日記 | 心情複雜、需要整理思緒 |
+| `E_minimal.txt` | 極簡清單 | 懶得打字、只記 bullet |
+| `F_cyberpunk.txt` | 賽博龐克終端機 | 想用機器人口吻記錄、風格強烈 |
+
+**F_cyberpunk 慣例：** 以 `SYSTEM_LOG :: NODE-DD :: YYYY.MM.DD` 作為標題；區塊用 `BOOT SEQUENCE / PROCESS LOG / SELF-DIAGNOSTIC / NEXT_TASK_QUEUE`；時間戳記可用 `[HH:MM:SS]` 精確格式（解析器以 `[HH:MM]` 前綴匹配，秒數部分作為 plain text 保留）。
+
 ## Key Implementation Details
 
 - **URL navigation:** Hash-based (`#YYYYMMDD`), with `history.pushState` for back/forward support.
