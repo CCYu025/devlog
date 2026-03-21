@@ -13,3 +13,4 @@ B_technote.txt   技術筆記        深入解決一個問題
 C_sprint.txt     衝刺速記        靈感爆發、快速推進
 D_reflection.txt 反思日記        心情複雜、需要整理思緒
 E_minimal.txt    極簡清單        懶得打字、只記 bullet
+F_cyberpunk.txt  賽博龐克終端機  想用機器人口吻記錄、風格強烈
