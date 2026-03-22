@@ -28,12 +28,22 @@ window.addEventListener('popstate', (e) => {
 
 async function init() {
   const hash = readURLHash();
+
+  // 立即清除 welcome 並啟動 static noise，確保雜訊是頁面開啟後第一個畫面
+  _twGeneration++;
+  const initGen = _twGeneration;
+  document.getElementById('log-body').innerHTML = '';
+  const initStaticPromise = showStaticNoise(
+    document.getElementById('content'),
+    () => _twGeneration !== initGen
+  );
+
   try {
-    const index = await fetchIndex();
+    const index = await fetchIndex();       // 與 noise 並行執行
     populateSidebar(index.files);
     updateStatusBar(index);
     const target = hash && index.files.includes(hash + '.txt') ? hash + '.txt' : index.files[0];
-    if (target) loadFile(target, true);
+    if (target) loadFile(target, true, initStaticPromise);
   } catch (err) {
     showSidebarMessage('Initializing…');
     updateStatusBarError();
@@ -157,7 +167,7 @@ async function showStaticNoise(contentEl, isStale) {
 }
 
 // ── File loading ───────────────────────────────────────────────
-async function loadFile(filename, addToHistory) {
+async function loadFile(filename, addToHistory, existingStaticPromise = null) {
   closeSidebar();
   currentFile = filename;
   setActiveLink(filename);
@@ -172,7 +182,7 @@ async function loadFile(filename, addToHistory) {
 
   document.getElementById('log-body').innerHTML = '';
   const contentEl = document.getElementById('content');
-  const staticPromise = showStaticNoise(contentEl, isStale);
+  const staticPromise = existingStaticPromise || showStaticNoise(contentEl, isStale);
 
   try {
     const res = await fetch(`./logs/${filename}`);
