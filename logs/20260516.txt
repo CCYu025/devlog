@@ -1,0 +1,137 @@
+# SYSTEM_LOG :: NODE-22 :: 2026.05.16
+
+## BOOT SEQUENCE
+
+[08:00:00] >> 正在載入本週記憶碎片...
+           >> 資料回收率：91.7%
+           >> 偵測到雙任務節點並行執行痕跡
+
+距上次紀錄：56 天。
+任務排程器顯示：本週雙核心全速運轉。
+AIndex 與 PersonalAgent 同時在線——
+這不是偶然，這是刻意的壓力測試。
+
+---
+
+## PROCESS LOG :: WEEK 2026.05.10 – 2026.05.16
+
+### [TASK_NODE_A] AIndex — 機械臂專案 AI 文件助手
+
+[05/10 — DAY 1] MVP 啟動
+
+[14:00:00] >> FastAPI + Claude Haiku 4.5 + 純 HTML 前端上線
+           >> 監聽埠：8080
+           >> API 端點數：3
+
+  核心端點已就位：
+  - /summarize      → 文件摘要生成
+  - /documents      → 文件清單回傳
+  - /files/{id}     → PDF 預覽串流
+
+  前端架構：
+  - SSE 串流接收，逐字渲染
+  - 可折疊文件清單（collapsible file list）
+  - 底部 PDF 抽屜（bottom drawer）
+
+[05/11 — DAY 2] 深層重構
+
+[20:00:00] >> 偵測到阻塞式 API 呼叫，執行外科手術式替換
+           >> 假進度條已移除——誠實比表演重要
+
+  重構清單：
+  - [DONE] 阻塞式 Claude API → SSE 串流化
+  - [DONE] 快取層 TTL 設為 1 小時，防止記憶體洩漏
+  - [DONE] AbortController 介入：防止並發請求污染
+  - [DONE] 雙態載入 UI（串流中 vs 命中快取）
+  - [DONE] COMPANY_CONTEXT 注入：強制摘要使用正確公司名稱
+  - [DONE] 階層式 CLAUDE.md（根層 / 後端 / 前端 三層結構）
+  - [DONE] aindex-reviewer agent 掛載完成
+
+  系統評估：
+  >> 阻塞移除後，UX 延遲感知下降 ~70%
+  >> 快取命中時，回應時間 < 50ms
+
+---
+
+### [TASK_NODE_B] PersonalAgent — 個人生產力助手
+
+[05/14 — DAY 3] MVP + 強化
+
+[09:00:00] >> 全端架構初始化完成
+           >> React 19 + FastAPI (port 8001) + SQLite + Claude Sonnet 4.6
+
+  功能模組：
+  - 匯報模組（SSE 串流日報生成）
+  - 排程模組（CRUD 全操作）
+
+  記憶架構 — 三層設計：
+  - L1：當日記憶（daily）
+  - L2：近三日記憶（recent 3 days）
+  - L3：長期記憶（long-term）
+
+  邊緣案例處理：
+  - cleanup_stale_pending_undo() 函式上線
+    >> 清除孤立排程的 pending_undo 狀態，防止資料腐爛
+  - pa-reviewer agent 掛載完成
+
+[05/15 — DAY 4] 功能完善 + 開發流程鎖定
+
+[18:00:00] >> 排程編輯功能合併
+           >> PATCH /schedules/{id}，限制條件：status='active'
+
+  前端新增：
+  - ScheduleItem 內聯展開編輯（inline expand-edit）
+    >> 日期選擇器 + 描述欄位同框
+  - 匯報 UI 顯示「今日已完成項目」
+    >> 防止 AI 重複建議已執行的任務
+
+  Claude 輸出規格鎖定：
+  - 單行純文字，上限 40 字元
+  - 禁止 bullet list / markdown 格式
+  - 雙分支 prompt 邏輯：
+    >> 今日有完成項 → 評估 + 建議模式
+    >> 今日無完成項 → 純摘要模式
+
+  開發流程強制協議：
+  - /verify 指令：self-check → pa-reviewer sub-agent → 通過方可 commit
+  - CLAUDE.md 不變式已鎖定：
+    >> SSE 事件順序
+    >> 狀態機轉換規則
+    >> 雙分支 prompt 架構
+
+---
+
+## SELF-DIAGNOSTIC
+
+[INFO] 本週任務完成率：ABOVE_THRESHOLD
+[INFO] 雙節點並行執行：無死鎖，無優先級反轉
+
+[WARN] 偵測到潛在技術債節點：
+  >> AIndex：COMPANY_CONTEXT 目前為硬編碼注入，未來需參數化
+  >> PersonalAgent：SQLite 單機架構，多設備同步場景尚未覆蓋
+
+[REFLECT]
+
+  兩個系統都在同一週從 MVP 到可用狀態。
+  速度的代價是：某些決策是為了「能跑」而非「能長久跑」。
+
+  但有一件事做對了——
+  每個系統都在完工前執行了 reviewer agent。
+  這不是多餘的儀式，
+  這是讓 AI 協作不退化成盲目執行的最後防線。
+
+  工具放大能力，reviewer 放大判斷力。
+  少了後者，前者只是加速製造錯誤。
+
+---
+
+## NEXT_TASK_QUEUE
+
+- [PENDING] AIndex：COMPANY_CONTEXT 抽離為環境變數或設定檔
+- [PENDING] PersonalAgent：評估多設備同步方案（PostgreSQL / Turso）
+- [PENDING] 本週兩項系統：補齊整合測試覆蓋率
+- [PENDING] 下一個建構目標選定——單節點，全流程，深度優先
+
+[23:59:59] >> SESSION END
+           >> 本週雙核心任務：已封存
+           >> 下次連線請攜帶下一個明確目標，否則此節點將標記為 DRIFTING
