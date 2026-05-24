@@ -1,0 +1,66 @@
+# SYSTEM_LOG :: NODE-23 :: 2026.05.24
+
+## BOOT SEQUENCE
+[08:00:00] >> WEEKLY_SUMMARY_MODE :: ACTIVATED
+           >> REPORTING_PERIOD  :: 2026.05.19 — 2026.05.24
+           >> ACTIVE_NODES      :: 2 (OrderLunch / tailscale-remote-setup)
+           >> STATUS            :: MILESTONE REACHED
+
+---
+
+## PROCESS LOG
+
+### [TASK_NODE_A] OrderLunch :: LINE 生態系整合
+
+[05/19 — Phase 1 封存] 店家庫、多照片 gallery、重入修改、手動補單
+                        功能面全數收攏，系統可獨立運作
+
+[05/22 — Phase 1.5] LINE 完整串接上線
+[10:30] >> LIFF SDK 升版，修正跨平台時序缺陷
+        >> 連結路由機制重構：抽象化多段 fallback，消弭 URL 丟失問題
+[11:17] >> LINE_ENABLED = True
+        >> 開團自動推送 / 結單自動摘要，進入線上運行狀態
+        >> LIFF 已 Publish — 所有使用者可存取
+
+[REFLECT] LINE 生態系的整合複雜度遠超預期——
+          每一個「小問題」背後都是平台對瀏覽器環境的強制假設。
+          真正的工作是學會在平台規則內找到穩定的縫隙。
+
+---
+
+### [TASK_NODE_B] tailscale-remote-setup :: Zero Trust 遠端網絡
+
+[05/22 — 初始化] 從概念到基礎設施：建立 Tailnet、確立雙層權限模型
+[09:00] >> Policy File 版本化，納入 Git 管控
+        >> 第一台工業電腦上線，RDP / PSRemoting / MES 埠口驗證通過
+        >> 文件體系建立：設備範本、驗收清單、變更紀錄
+
+[05/23 — 擴展] 第二台設備接入
+[14:00] >> 探測網段、定位設備、Tag 指派、防火牆規則同步
+        >> RDP 連線驗證完成，拔實體線後遠端存取正常
+
+[REFLECT] Infrastructure-as-Code 的核心不是腳本，是文件。
+          讓「下一個人」（或三個月後的自己）能夠照著清單復現一切，
+          這才是基礎設施真正的穩定性。
+
+---
+
+## SELF-DIAGNOSTIC
+
+[INFO]  本週雙線並行，兩項均達到段落性里程碑
+[INFO]  OrderLunch 進入可實際使用狀態（非 MVP，是真正的工具）
+[INFO]  Tailscale 網絡從 0 → 2 設備，文件體系同步建立
+[WARN]  兩條線都存在「可以繼續做但刻意暫停」的後續：
+        OrderLunch Phase 2（CSV、歷史、自動結單）
+        tailscale 後續設備擴充
+[REFLECT] 暫停不是放棄，是確認「現在夠用了」的判斷能力。
+
+---
+
+## NEXT_TASK_QUEUE
+
+- [PENDING] OrderLunch Phase 2 — 歷史查詢 / CSV / 自動結單（視需求啟動）
+- [PENDING] tailscale — 視工廠需求新增第三台設備
+- [OPEN]    下一個構建方向尚未確定
+
+[08:30:00] >> SESSION END :: NODE-23 ARCHIVED
