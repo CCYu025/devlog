@@ -1,0 +1,88 @@
+# SYSTEM_LOG :: NODE-24 :: 2026.05.31
+
+## BOOT SEQUENCE
+[08:00:00] >> WEEKLY_SUMMARY_MODE :: ACTIVATED
+           >> REPORTING_PERIOD  :: 2026.05.26 — 2026.05.31
+           >> ACTIVE_NODES      :: 3 (Production / yf-log-monitor / portal)
+           >> LEARNING_MODE     :: ENGAGED (MIT 6.S191 + Google Skills)
+           >> STATUS            :: FULL_SPECTRUM_WEEK
+
+---
+
+## PROCESS LOG
+
+### [TASK_NODE_A] Production :: 從開發環境到廠房
+
+[05/26 — 驗收基準] 主管對帳資料建立，系統進入驗收階段
+[05/28 — 部署攻堅] 廠房機器的環境與開發機不同——驅動版本、位元數、路徑都是變數
+[09:00] >> ODBC 驅動相容性問題浮現：多驅動 fallback 機制重寫
+        >> 遠端部署腳本完成，自動化從傳輸到啟動的完整流程
+[16:21] >> 警示邏輯精化：從「或」改「且」，降低誤報率
+        >> 資料品質判斷重新定義：只標記物理不合理值，不混入績效判斷
+
+[REFLECT] 最後一段路永遠最硬——
+          不是功能不夠，是環境跟你想的不一樣。
+          能自動化部署的那一刻，才算真的交出去了。
+
+---
+
+### [TASK_NODE_B] yf-log-monitor :: 讓機器說話
+
+[本週] FastAPI + watchdog 架構完成，PLC 事件零延遲推送至 WebSocket
+[10:00] >> watchdog 監聽本機日誌目錄，FS 事件觸發解析與分類
+        >> 六台機器狀態即時聚合，事件依嚴重程度分層（error / warn / alert / info）
+        >> 前端：純 HTML，無框架，手機優先，連線呼吸燈 + 震動回饋
+
+[REFLECT] 工廠的感測資料在磁碟上沉默地堆積著，
+          watchdog 不過是讓它們開口說話的那條線。
+
+---
+
+### [TASK_NODE_C] portal :: 提案，而非建造
+
+[05/28] 完成 YU FENG 技術部系統入口 v2.0 重構提案
+[14:00] >> 現狀評估：連結清單的可擴充性極限是 ~10 個系統
+        >> 提案方向：JSON 資料層、⌘K 搜尋、健康檢查、釘選機制
+        >> 三階段六週路線圖，技術限制明確（靜態 HTML，無建置工具）
+
+[REFLECT] 提案是一種思維工具——
+          寫出「為什麼現在不夠好」比「要加什麼功能」更難，也更值得。
+
+---
+
+## LEARNING LOG
+
+[MIT 6.S191 — Lecture 6] 語言模型的邊界
+>> 涌現能力不是魔法，是資料 x 目標 x 架構 x 規模的乘積
+>> 生成模型的價值在候選與搜尋，驗證仍需閉環
+>> 流暢輸出與事實正確性之間，沒有必然關係
+
+[MIT 6.S191 — Lecture 7] AI 的三法則（工程版）
+>> Asimov 的法則寫不進機率式系統
+>> 可觀測性 → 可評估性 → 可停止部署，才是真正的安全鏈
+>> 責任從「模型的答案對不對」移動到「整個 workflow 是否可被信任」
+
+[Google Skills] 線上課程三門，持續補足知識基底
+
+[REFLECT] 學的越多，越清楚「能用」和「應該信任」是兩件事。
+
+---
+
+## SELF-DIAGNOSTIC
+
+[INFO]  本週三條工作線同時推進，Production 達到可交付狀態
+[INFO]  監控系統架構完整，廠房資料流通路徑打通
+[INFO]  MIT 6.S191 兩講完成，對 AI 能力邊界有更清晰的框架
+[WARN]  portal 提案完成但尚未開始實作，等待優先級確認
+[REFLECT] 充實感不來自完成數量，而是每件事都往前推了一格。
+
+---
+
+## NEXT_TASK_QUEUE
+
+- [PENDING] Production — 廠房長跑觀察，視回饋決定 Phase 2 方向
+- [PENDING] portal v2.0 — Phase 1 實作待啟動
+- [PENDING] MIT 6.S191 — 後續講次繼續
+- [OPEN]    下一個構建方向仍在醞釀中
+
+[08:30:00] >> SESSION END :: NODE-24 ARCHIVED
